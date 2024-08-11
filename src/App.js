@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+// import "./App.css";
+// import React from "react";
+// import Header from "./Components/Header/Header";
+// import Carousell from "./Components/Carousell/Carousell";
+// import Category from "./Components/Category/Category";
+// import Product from "./Components/Product/Product";
+
+// function App() {
+// 	return (
+// 		<>
+// 			<Header />
+// 			<Carousell />
+// 			<Category />
+// 			<Product />
+// 		</>
+// 	);
+// }
+
+// export default App;
+import React, { useContext, useEffect } from "react";
+import Routers from "./Router.jsx";
+import { DataContext } from "./Components/DataProvider/DataProvider.jsx";
+import { Type } from "./Utility/action.type.js";
+import { auth } from "./Utility/firebase.js";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [{ user }, dispatch] = useContext(DataContext);
+	useEffect(() => {
+		auth.onAuthStateChanged((authUser) => {
+			if (authUser) {
+				dispatch({ type: Type.SET_USER, user: authUser });
+			} else {
+				dispatch({ type: Type.SET_USER, user: null });
+			}
+		});
+	}, []);
+
+	return <Routers />;
 }
 
 export default App;
